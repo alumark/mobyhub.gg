@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+  <body>
+      <div class="flex items-center justify-center h-screen bg-gray-300">
+          <div class="w-full max-w-sm object-center bg-white shadow rounded p-4">
+              <strong>
+              Hi, {{name}}
+              </strong> <br/><br/>
+
+              <p class="text-sm">
+                  Thanks for signing up for mobyhub! <br/>
+                  You signed up using the key: {{key}}, which has now been used. <br/><br/>
+                  Keep in mind that if you abuse/break our <a href="https://mobyhub-pipeline.glitch.me/tos" class="text-blue-700">TOS</a>, you risk getting blacklisted. <br/><br/>
+
+
+                  You can find the list of supported games and commands <a href="https://mobyhub-pipeline.glitch.me/supportedgames" class="text-blue-700">here</a>,
+                  And you can get the loadstring here: <br/>
+              </p>
+
+              <code class="bg-gray-100 text-xs focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal shadow text-gray-700">loadstring(game:HttpGet(('https://mobyhub-pipeline.glitch.me/loadstring'),true))()</code>
+          </div>
+      </div>
+  </body>
+</html>
