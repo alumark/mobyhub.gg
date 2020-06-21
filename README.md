@@ -1,2 +1,0 @@
-# mobyhub.gg
-okay
