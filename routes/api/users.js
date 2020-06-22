@@ -316,7 +316,6 @@ router.get("/script/:username/:password", (req, res) => {
                   Authorization: "token " + process.env.TOKEN
               }
           }).then(response => {
-            console.log(response.data)
               return res.send(response.data);
           }).catch(() => {
               res.status(500);
