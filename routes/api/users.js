@@ -30,7 +30,7 @@ const createKey = async () => {
   });
 };
 
-module.exports.purchased = async order => {
+let purchased = async order => {
   return new Promise(async (resolve, reject) => {
   
     if (order.status === 1 && order.customer_email) {
