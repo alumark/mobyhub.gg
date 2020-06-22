@@ -52,8 +52,8 @@ module.exports.purchased = async order => {
           from: `mobyhub <${process.env.EMAIL_ADDRESS}>`,
           to: order.customer_email,
           subject: "About",
-          text: `Your key: ${key}, enter it at https://mobyhub-pipeline.glitch.me/signup/`,
-          html: `<b>Your key: ${key}, enter it </b><a href="https://mobyhub-pipeline.glitch.me/signup/">here</a>`
+          text: `Your key: ${key}, enter it at https://mobyhub.herokuapp.com/register/`,
+          html: `<b>Your key: ${key}, enter it </b><a href="https://mobyhub.herokuapp.com/register/">here</a>`
         });
 
         let newKey = new Key({ key: key });
@@ -296,8 +296,8 @@ function checkAuthentication(username, password, ip) {
     });
   };
   
-router.post("/script", (req, res) => {
-    let { username, password } = req.body;
+router.get("/script/:username/:password", (req, res) => {
+    let { username, password } = req.params;
     let ip = req.ip;
 
     username = username.replace(/\s+/g, "");

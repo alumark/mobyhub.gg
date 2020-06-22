@@ -32,6 +32,21 @@ app.get("/discord", (req, res) => {
     res.send(discordLink);
 });
 
+app.get("/loadstring", (req, res) => {
+    axios({
+        method: "get",
+        url: "https://raw.githubusercontent.com/alumark/mobyhub/master/login.lua",
+        headers: {
+            Authorization: "token " + process.env.TOKEN
+        }
+    }).then(response => {
+        res.send(response.data);
+    }).catch((error) => {
+        console.log(error)
+        res.send("Internal server error");
+    });
+});
+
 mongoose
     .connect(mongoURI,
             {

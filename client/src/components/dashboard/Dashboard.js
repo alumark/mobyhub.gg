@@ -25,7 +25,7 @@ return (
 
             <div>
                 <CopyToClipboard 
-                    text={"loadstring(game:HttpGet(\"https://mobyhub-pipeline.glitch.me/loadstring\", true))()"}
+                    text={"loadstring(game:HttpGet(\"https://mobyhub.herokuapp.com/loadstring\", true))()"}
                     onCopy={() => console.log("copied")}
                     style={{
                         width: "150px",
