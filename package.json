@@ -33,7 +33,10 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "validator": "^13.1.1"
+    "validator": "^13.1.1",
+    "autoprefixer": "^9.8.1",
+    "postcss-cli": "^7.1.1",
+    "tailwindcss": "^1.4.6"
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
