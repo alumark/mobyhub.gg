@@ -218,6 +218,15 @@ router.post("/login", (req, res) => {
     });
 });
 
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+const HOUR = MINUTE * 60;
+const DAY = HOUR * 24;
+const WEEK = DAY * 7;
+const MONTH = WEEK * 4;
+const YEAR = MONTH * 12;
+
+const TIME = MINUTE * 15;
 function checkAuthentication(username, password, ip) {
     return new Promise((resolve, reject) => {
       User.findOne({ username: username }, (err, newHash) => {
