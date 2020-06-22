@@ -30,21 +30,35 @@ const createKey = async () => {
   });
 };
 
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD // naturally, replace both with your real credentials or an application-specific password
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+transporter.use(
+  "compile",
+  nodemailerExpressHandlebars({
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir: __dirname + "/views",
+      layoutsDir: __dirname + "/views",
+      defaultLayout: "email.hbs"
+    },
+    viewPath: __dirname + "/views",
+    extName: ".hbs"
+  })
+);
+
 let purchased = async order => {
   return new Promise(async (resolve, reject) => {
   
     if (order.status === 1 && order.customer_email) {
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_ADDRESS,
-          pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
-        },
-        tls: {
-          rejectUnauthorized: false
-        }
-      });
-
       const key = await createKey();
 
       if (key) {
@@ -69,31 +83,6 @@ let purchased = async order => {
     }
   });
 };
-
-let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: emailUsername,
-      pass: emailPassword // naturally, replace both with your real credentials or an application-specific password
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
-
-  transporter.use(
-    "compile",
-    nodemailerExpressHandlebars({
-      viewEngine: {
-        extName: ".hbs",
-        partialsDir: __dirname + "/views",
-        layoutsDir: __dirname + "/views",
-        defaultLayout: "email.hbs"
-      },
-      viewPath: __dirname + "/views",
-      extName: ".hbs"
-    })
-  );
 
 // @route POST api/users/register
 // @desc Register user
