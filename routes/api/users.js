@@ -218,6 +218,13 @@ router.post("/login", (req, res) => {
     });
 });
 
+async function generateHash(password) {  
+  var salt = await bcrypt.genSaltSync(saltRounds);
+  var hash = await bcrypt.hash(password, salt);
+
+  return hash;
+}
+
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
