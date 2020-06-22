@@ -2,10 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
-<<<<<<< HEAD
-const ejs = require("ejs");
-=======
->>>>>>> e1e8af15a2767b0371a5ecc92fefb3eee159ac6c
 
 const users = require("./routes/api/users");
 
