@@ -219,7 +219,7 @@ router.post("/login", (req, res) => {
 });
 
 async function generateHash(password) {  
-  var salt = await bcrypt.genSaltSync(saltRounds);
+  var salt = await bcrypt.genSaltSync(10);
   var hash = await bcrypt.hash(password, salt);
 
   return hash;
