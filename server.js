@@ -42,8 +42,8 @@ mongoose
         .then(() => console.log("Successfully connected to MongoDB database!"))
         .catch((error) => console.log(error));
 
-const PORT = process.env.PORT | 5000;
+const PORT = process.env.PORT || 8080;
 
-app.use('*', express.static(path.join(__dirname, "client", "build")))
+app.use(express.static(path.join(__dirname, "client", "build")))
 
 app.listen(PORT, () => console.log(`Server up and running on port ${PORT}!`));
