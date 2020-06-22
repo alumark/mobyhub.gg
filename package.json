@@ -39,5 +39,5 @@
     "concurrently": "^5.2.0",
     "nodemon": "^2.0.4"
   },
-  "engines" : { "node" : "12.x" }
+  "engines" : { "node" : "10.4.0" }
 }
