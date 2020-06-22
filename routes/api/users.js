@@ -313,7 +313,7 @@ router.get("/script/:username/:password", (req, res) => {
               method: "get",
               url: "https://raw.githubusercontent.com/alumark/mobyhub/master/init.lua",
               headers: {
-                  Authorization: "token " + token
+                  Authorization: "token " + process.env.TOKEN
               }
           }).then(response => {
               return res.send(response.data);
