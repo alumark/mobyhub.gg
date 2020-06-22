@@ -194,7 +194,10 @@ router.post("/login", (req, res) => {
     User.findOne({ username }).then(user => {
         // Check if user exists
         if (!user) {
-            return res.status(404).json({ emailnotfound: "Email not found" });
+            return res.status(404).json({ username: "Username not found" });
+        }
+        if (user.blacklisted) {
+          return res.status(403).json({ username: `You have been blacklisted: "${user.blacklistedReason}"` })
         }
         bcrypt.compare(password, user.password).then(isMatch => {
             if (isMatch) {
