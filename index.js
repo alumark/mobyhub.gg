@@ -26,7 +26,7 @@ const discordLink = "https://discord.gg/pQrJysn";
 app.enable("trust proxy");
 
 app.set('view engine', 'ejs');
-app.use(express.static('client/build'))
+app.use("/", express.static('client/build'))
 
 app.get("/discord", (req, res) => {
     res.send(discordLink);
