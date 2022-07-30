@@ -57,9 +57,9 @@ const purchased = async order => {
         let info = await transporter.sendMail({
           from: `mobyhub <${process.env.EMAIL_ADDRESS}>`,
           to: order.customer_email,
-          subject: "About",
-          text: `Your key: ${key}, enter it at https://mobyhub-pipeline.glitch.me/signup/`,
-          html: `<b>Your key: ${key}, enter it </b><a href="https://mobyhub-pipeline.glitch.me/signup/">here</a>`
+          subject: `mobyhub order <${order.uniqid}>`,
+          text: `Your key: ${key}, enter it at https://mobyhub.herokuapp.com/`,
+          html: `Your key: ${key}, enter it </b><a href="mobyhub.herokuapp.com">here</a>`
         });
 
         let newKey = new Key({ key: key });

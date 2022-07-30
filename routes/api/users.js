@@ -13,6 +13,32 @@ const validateLoginInput = require("../../validation/login");
 const User = require("../../models/User");
 const Key = require("../../models/Key")
 
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+transporter.use(
+  "compile",
+  nodemailerExpressHandlebars({
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir: __dirname + "/views",
+      layoutsDir: __dirname + "/views",
+      defaultLayout: "email.hbs"
+    },
+    viewPath: __dirname + "/views",
+    extName: ".hbs"
+  })
+);
+
+
 // @route POST api/users/register
 // @desc Register user
 // @access Public
@@ -68,7 +94,17 @@ router.post("/register", (req, res) => {
                                 user
                                     .save()
                                     .then(() => {
-                                        res.json(user)
+                                        await transporter.sendMail({
+                                            from: `mobyhub <${process.env.EMAIL_ADDRESS}>`,
+                                            to: email,
+                                            subject: `Your mobyhub account`,
+                                            template: "email",
+                                            context: {
+                                              name: username,
+                                              key: key
+                                            }
+                                        });
+                                        res.status(200).json(user)
                                     })
                                     .catch(err => {
                                         return res.status(500).json({
