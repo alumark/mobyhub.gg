@@ -1,14 +1,19 @@
 const express = require("express");
 const router = express.Router();
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
+
 // Load User model
 const User = require("../../models/User");
 const Key = require("../../models/Key")
+
+router.use(express.json())
 
 function getRandomString(length) {
   var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567891234567890!?-.';
@@ -18,12 +23,6 @@ function getRandomString(length) {
   }
   return result;
 }
-
-const createKey = async () => {
-  return new Promise(async (resolve) => {
-    resolve(getRandomString(24));
-  });
-};
 
 // @route POST api/users/register
 // @desc Register user
