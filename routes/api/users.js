@@ -1,12 +1,8 @@
 const express = require("express");
-const bodyparser = require("body-parser");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
-const nodemailerExpressHandlebars = require("nodemailer-express-handlebars");
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
@@ -23,69 +19,9 @@ function getRandomString(length) {
   return result;
 }
 
-function signHmacSha512(key, str) {
-  let hmac = crypto.createHmac("sha512", key);
-  let signed = hmac.update(Buffer.from(str, 'utf-8')).digest("hex");
-  return signed
-}
-
 const createKey = async () => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     resolve(getRandomString(24));
-  });
-};
-
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_ADDRESS,
-    pass: process.env.EMAIL_PASSWORD // naturally, replace both with your real credentials or an application-specific password
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
-transporter.use(
-  "compile",
-  nodemailerExpressHandlebars({
-    viewEngine: {
-      extName: ".hbs",
-      partialsDir: __dirname + "/views",
-      layoutsDir: __dirname + "/views",
-      defaultLayout: "email.hbs"
-    },
-    viewPath: __dirname + "/views",
-    extName: ".hbs"
-  })
-);
-
-let purchased = async order => {
-  return new Promise(async (resolve, reject) => {
-  
-    if (order.status === 1 && order.customer_email) {
-      const key = await createKey();
-
-      if (key) {
-        let info = await transporter.sendMail({
-          from: `mobyhub <${process.env.EMAIL_ADDRESS}>`,
-          to: order.customer_email,
-          subject: "About",
-          text: `Your key: ${key}, enter it at https://mobyhub.herokuapp.com/register/`,
-          html: `<b>Your key: ${key}, enter it </b><a href="https://mobyhub.herokuapp.com/register/">here</a>`
-        });
-
-        let newKey = new Key({ key: key });
-        await newKey.save((err) => {
-          if (err) console.log(err);
-          console.log(`saved key! ${key}`);
-        });
-
-        resolve(key);
-      } else {
-        reject("no key")
-      }
-    }
   });
 };
 
@@ -223,13 +159,6 @@ router.post("/login", (req, res) => {
     });
 });
 
-async function generateHash(password) {  
-  var salt = await bcrypt.genSaltSync(10);
-  var hash = await bcrypt.hash(password, salt);
-
-  return hash;
-}
-
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
@@ -332,7 +261,7 @@ router.get("/script/:username/:password", (req, res) => {
               message: errorMessage,
           })
       });
-    })
+})
 
 router.post("/purchase", async (req, res) => {
   const signature = signHmacSha512(req.body, process.env.WEBHOOK_SECRET)
@@ -350,4 +279,4 @@ router.post("/purchase", async (req, res) => {
   }
 });
 
-  module.exports = router;
+module.exports = router;
