@@ -26,7 +26,6 @@ const createKey = async () => {
 
 const purchased = async order => {
   return new Promise(async (resolve, reject) => {
-  
     if (order.status === "COMPLETED" && order.customer_email) {
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -60,6 +59,8 @@ const purchased = async order => {
       } else {
         reject("no key")
       }
+    } else {
+      reject('small issue');
     }
   });
 };
@@ -98,15 +99,12 @@ function validateShopifySignature() {
                   'validateShopifySignature: req.rawBody is undefined. Please make sure the raw request body is available as req.rawBody.'
               )
           }
-
-          console.log(req.headers)
+          
           const hmac = req.headers['x-sellix-signature']
           const hash = crypto
               .createHmac('sha512', process.env.WEBHOOK_SECRET)
               .update(rawBody)
               .digest('hex')
-
-          console.log(hash, hmac)
 
           const signatureOk = crypto.timingSafeEqual(
               Buffer.from(hash),
@@ -129,11 +127,16 @@ router.post(
     '/purchased',
     validateShopifySignature(),
     async (req, res) => {
-        const key = await purchased(req.body);
-        console.log(`new key ${key}`);
-        return res.status(200).json({
-            status: "ok"
+        const key = await purchased(req.body).catch(() => {
+          res.status(400).json({
+            message: "authentication failed"
+          })
         });
+
+        console.log(`new key ${key}`);
+        res.status(200).json({
+          message: "ok"
+        })
     }
 )
 

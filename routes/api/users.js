@@ -157,71 +157,71 @@ const YEAR = MONTH * 12;
 
 const TIME = MINUTE * 15;
 function checkAuthentication(username, password, ip) {
-    return new Promise((resolve, reject) => {
-      User.findOne({ username: username }, (err, newHash) => {
-        if (err) {
-          console.log(err);
-          reject("Internal server error");
+  return new Promise((resolve, reject) => {
+    User.findOne({ username: username }, (err, newHash) => {
+      if (err) {
+        console.log(err);
+        reject("Internal server error");
+        return;
+      }
+  
+      if (newHash) {
+        if (newHash.blacklisted) {
+          reject(`You are blacklisted for: \n${newHash.blacklistedReason}.`);
           return;
         }
   
-        if (newHash) {
-          if (newHash.blacklisted) {
-            reject(`You are blacklisted for: \n${newHash.blacklistedReason}.`);
+        bcrypt.compare(password, newHash.password, async function(err, result) {
+          console.log(result);
+          if (err) {
+            console.log(err);
+            reject("Internal server error");
             return;
           }
-  
-          bcrypt.compare(password, newHash.password, async function(err, result) {
-            console.log(result);
-            if (err) {
-              console.log(err);
-              reject("Internal server error");
-              return;
-            }
-            if (result) {
-              bcrypt.compare(ip, newHash.ip, async function(err, success) {
-                if (success) {
-                  resolve();
-                } else if (
-                  (!success && !newHash.lastChanged) ||
-                  new Date().getTime() - newHash.lastChanged.getTime() >= TIME
-                ) {
-                  User.updateOne(
-                    { username: username },
-                    { ip: await generateHash(ip), lastChanged: new Date() },
-                    function(err, res) {
-                      if (err) {
-                        console.log(err);
-                        reject("Internal server error");
-                        return;
-                      }
-                      resolve();
+          if (result) {
+            bcrypt.compare(ip, newHash.ip, async function(err, success) {
+              if (success) {
+                resolve();
+              } else if (
+                (!success && !newHash.lastChanged) ||
+                new Date().getTime() - newHash.lastChanged.getTime() >= TIME
+              ) {
+                User.updateOne(
+                  { username: username },
+                  { ip: await generateHash(ip), lastChanged: new Date() },
+                  function(err, res) {
+                    if (err) {
+                      console.log(err);
+                      reject("Internal server error");
+                      return;
                     }
-                  );
-                } else if (
-                  !success &&
-                  (newHash.lastChanged &&
-                    new Date().getTime() - newHash.lastChanged.getTime() <= TIME)
-                ) {
-                  reject(
-                    `Your IP was changed too recently.  Please wait at least ${moment
-                      .duration(
-                        new Date().getTime() - newHash.lastChanged.getTime()
-                      )
-                      .format("mm minutes, ss seconds")}.`
-                  );
-                }
-              });
-            } else {
-              reject("Invalid password");
-            }
-          });
-        } else {
-          reject("Invalid username");
-        }
-      });
+                    resolve();
+                  }
+                );
+              } else if (
+                !success &&
+                (newHash.lastChanged &&
+                  new Date().getTime() - newHash.lastChanged.getTime() <= TIME)
+              ) {
+                reject(
+                  `Your IP was changed too recently.  Please wait at least ${moment
+                    .duration(
+                      new Date().getTime() - newHash.lastChanged.getTime()
+                    )
+                    .format("mm minutes, ss seconds")}.`
+                );
+              }
+            });
+          } else {
+            reject("Invalid password");
+          }
+        });
+      } else {
+        reject("Invalid username");
+      }
     });
-  };
+  });
+};
   
 router.get("/script/:username/:password", (req, res) => {
     let { username, password } = req.params;
@@ -230,25 +230,25 @@ router.get("/script/:username/:password", (req, res) => {
     username = username.replace(/\s+/g, "");
 
     checkAuthentication(username, password, ip)
-      .then(() => {
-          axios({
-              method: "get",
-              url: "https://raw.githubusercontent.com/alumark/mobyhub/master/init.lua",
-              headers: {
-                  Authorization: "token " + process.env.TOKEN
-              }
-          }).then(response => {
-              console.log("succesfully got script")
-              return res.send(response.data);
-          }).catch(() => {
-              res.status(500);
-          });
-      }).catch(errorMessage => {
-          return res.status(400).json({
-              status: "error",
-              message: errorMessage,
-          })
-      });
+        .then(() => {
+            axios({
+                method: "get",
+                url: "https://raw.githubusercontent.com/alumark/mobyhub/master/init.lua",
+                headers: {
+                    Authorization: "token " + process.env.TOKEN
+                }
+            }).then(response => {
+                console.log("succesfully got script")
+                return res.send(response.data);
+            }).catch(() => {
+                res.status(500);
+            });
+        }).catch(errorMessage => {
+            return res.status(400).json({
+                status: "error",
+                message: errorMessage,
+            })
+        });
 })
 
 module.exports = router;
