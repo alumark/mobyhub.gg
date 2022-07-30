@@ -3,7 +3,6 @@ const bodyparser = require("body-parser");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
@@ -14,7 +13,6 @@ const validateLoginInput = require("../../validation/login");
 // Load User model
 const User = require("../../models/User");
 const Key = require("../../models/Key")
-const { emailUsername, emailPassword, token } = require("../../config/keys");
 
 function getRandomString(length) {
   var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567891234567890!?-.';
@@ -335,8 +333,6 @@ router.get("/script/:username/:password", (req, res) => {
           })
       });
     })
-
-router.use(bodyparser.raw({ type: "application/json" }));
 
 router.post("/purchase", async (req, res) => {
   const signature = signHmacSha512(req.body, process.env.WEBHOOK_SECRET)
