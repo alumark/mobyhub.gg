@@ -18,16 +18,6 @@ function getRandomString(length) {
   return result;
 }
 
-router.use(
-  express.json({
-      limit: '50mb',
-      verify: (req, res, buf) => {
-          console.log('hello!!')
-          req.rawBody = buf
-      }
-  })
-)
-
 const createKey = async () => {
   return new Promise(async (resolve) => {
     resolve(getRandomString(KEY_LENGTH));
@@ -110,9 +100,11 @@ function validateShopifySignature() {
           }
           const hmac = req.headers['x-sellix-signature']
           const hash = crypto
-              .createHmac('sha256', process.env.WEBHOOK_SECRET)
+              .createHmac('sha512', process.env.WEBHOOK_SECRET)
               .update(rawBody)
               .digest('base64')
+
+          console.log(hash, hmac)
 
           const signatureOk = crypto.timingSafeEqual(
               Buffer.from(hash),
