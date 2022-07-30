@@ -98,7 +98,7 @@ function validateShopifySignature() {
                   'validateShopifySignature: req.rawBody is undefined. Please make sure the raw request body is available as req.rawBody.'
               )
           }
-          const hmac = req.headers['x-sellix-signature']
+          const hmac = req.headers['X-Sellix-Signature']
           const hash = crypto
               .createHmac('sha512', process.env.WEBHOOK_SECRET)
               .update(rawBody)

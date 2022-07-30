@@ -13,17 +13,6 @@ const validateLoginInput = require("../../validation/login");
 const User = require("../../models/User");
 const Key = require("../../models/Key")
 
-router.use(express.json())
-
-function getRandomString(length) {
-  var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567891234567890!?-.';
-  var result = '';
-  for ( var i = 0; i < length; i++ ) {
-      result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-  }
-  return result;
-}
-
 // @route POST api/users/register
 // @desc Register user
 // @access Public
