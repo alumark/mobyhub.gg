@@ -123,7 +123,7 @@ function validateShopifySignature() {
 }
 
 router.use(
-    bodyp.json({
+    bodyParser.json({
         limit: '50mb',
         verify: (req, res, buf) => {
             req.rawBody = buf
