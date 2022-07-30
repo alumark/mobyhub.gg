@@ -1,17 +1,11 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const router = express.Router();
 
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const axios = require("axios");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const nodemailerExpressHandlebars = require("nodemailer-express-handlebars");
 
-const validateRegisterInput = require("../../validation/register");
-const validateLoginInput = require("../../validation/login");
-
-const User = require("../../models/User");
 const Key = require("../../models/Key")
 
 const { emailUsername, emailPassword, token } = require("../../config/keys");
@@ -26,7 +20,7 @@ function getRandomString(length) {
 }
 
 const createKey = async () => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     resolve(getRandomString(KEY_LENGTH));
   });
 };
@@ -34,7 +28,7 @@ const createKey = async () => {
 const purchased = async order => {
   return new Promise(async (resolve, reject) => {
   
-    if (order.status === 1 && order.customer_email) {
+    if (order.status === "COMPLETED" && order.customer_email) {
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -129,7 +123,7 @@ function validateShopifySignature() {
 }
 
 router.use(
-    express.json({
+    bodyp.json({
         limit: '50mb',
         verify: (req, res, buf) => {
             req.rawBody = buf
@@ -140,7 +134,9 @@ router.use(
 router.post(
     '/purchased',
     validateShopifySignature(),
-    (req, res, next) => {
+    async (req, res) => {
+        const key = await purchased(req.body);
+        console.log(`new key ${key}`);
         return res.status(200).json({
             status: "ok"
         });

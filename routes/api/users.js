@@ -263,20 +263,4 @@ router.get("/script/:username/:password", (req, res) => {
       });
 })
 
-router.post("/purchase", async (req, res) => {
-  const signature = signHmacSha512(req.body, process.env.WEBHOOK_SECRET)
-
-  if (signature === req.headers["x-sellix-signature"]) {
-    let key = await purchased(req.body.data);
-    res.send({
-      success: "ok"
-    });
-  } else {
-    res.send({
-      success: "error",
-      message: "authentication failed"
-    });
-  }
-});
-
 module.exports = router;
