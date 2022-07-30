@@ -99,7 +99,7 @@ function validateShopifySignature() {
                   'validateShopifySignature: req.rawBody is undefined. Please make sure the raw request body is available as req.rawBody.'
               )
           }
-          
+
           const hmac = req.headers['x-sellix-signature']
           const hash = crypto
               .createHmac('sha512', process.env.WEBHOOK_SECRET)
@@ -127,7 +127,7 @@ router.post(
     '/purchased',
     validateShopifySignature(),
     async (req, res) => {
-        const key = await purchased(req.body).catch(() => {
+        const key = await purchased(req.body.data).catch(() => {
           res.status(400).json({
             message: "authentication failed"
           })
