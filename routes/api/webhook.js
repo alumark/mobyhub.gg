@@ -104,7 +104,7 @@ function validateShopifySignature() {
           const hash = crypto
               .createHmac('sha512', process.env.WEBHOOK_SECRET)
               .update(rawBody)
-              .digest('base64')
+              .digest('hex')
 
           console.log(hash, hmac)
 
