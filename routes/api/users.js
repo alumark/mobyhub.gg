@@ -24,6 +24,12 @@ function getRandomString(length) {
   return result;
 }
 
+function signHmacSha512(key, str) {
+  let hmac = crypto.createHmac("sha512", key);
+  let signed = hmac.update(Buffer.from(str, 'utf-8')).digest("hex");
+  return signed
+}
+
 const createKey = async () => {
   return new Promise(async (resolve, reject) => {
     resolve(getRandomString(24));
@@ -328,23 +334,20 @@ router.get("/script/:username/:password", (req, res) => {
           })
       });
     })
-
 router.post("/purchase", async (req, res) => {
-  const signature = crypto
-    .createHmac("SHA256", process.env.WEBHOOK_SECRET)
-    .digest("hex");
+  const signature = signHmacSha512(req.body, process.env.WEBHOOK_SECRET)
 
-  /*if (signature === req.headers["x-sellix-signature"]) {*/
+  if (signature === req.headers["x-sellix-signature"]) {*/
     let key = await purchased(req.body.data);
     res.send({
       success: "ok"
     });
-  /*} else {
+  } else {
     res.send({
       success: "error",
       message: "authentication failed"
     });
-  }*/
+  }
 });
 
   module.exports = router;
