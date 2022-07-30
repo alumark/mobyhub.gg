@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 
 const users = require("./routes/api/users");
-const users = require("./routes/api/webhook");
+const webhook = require("./routes/api/webhook");
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 // Routes
 app.use("/api/users", users);
-app.use("/api/webhook", users);
+app.use("/api/webhook", webhook);
 
 const { mongoURI } = require("./config/keys");
 
