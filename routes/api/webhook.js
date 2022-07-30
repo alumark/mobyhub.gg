@@ -100,7 +100,7 @@ function validateShopifySignature() {
           }
 
           console.log(req.headers)
-          const hmac = req.headers['X-Sellix-Signature']
+          const hmac = req.headers['x-sellix-signature']
           const hash = crypto
               .createHmac('sha512', process.env.WEBHOOK_SECRET)
               .update(rawBody)
