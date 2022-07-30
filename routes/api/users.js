@@ -5,6 +5,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
+// keys
+const keys = require("../../config/keys")
+
+//
 const nodemailer = require("nodemailer");
 const nodemailerExpressHandlebars = require("nodemailer-express-handlebars");
 
