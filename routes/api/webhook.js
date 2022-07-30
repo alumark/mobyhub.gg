@@ -33,6 +33,21 @@ let transporter = nodemailer.createTransport({
   }
 });
 
+transporter.use(
+  "compile",
+  nodemailerExpressHandlebars({
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir: __dirname + "/views",
+      layoutsDir: __dirname + "/views",
+      defaultLayout: "email.hbs"
+    },
+    viewPath: __dirname + "/views",
+    extName: ".hbs"
+  })
+);
+
+
 const purchased = async order => {
   return new Promise(async (resolve, reject) => {
     if (order.status === "COMPLETED" && order.customer_email) {
@@ -62,32 +77,7 @@ const purchased = async order => {
     }
   });
 };
-
-let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: emailUsername,
-      pass: emailPassword // naturally, replace both with your real credentials or an application-specific password
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
-
-  transporter.use(
-    "compile",
-    nodemailerExpressHandlebars({
-      viewEngine: {
-        extName: ".hbs",
-        partialsDir: __dirname + "/views",
-        layoutsDir: __dirname + "/views",
-        defaultLayout: "email.hbs"
-      },
-      viewPath: __dirname + "/views",
-      extName: ".hbs"
-    })
-  );
-
+  
 function validateShopifySignature() {
     return async (req, res, next) => {
         try {
