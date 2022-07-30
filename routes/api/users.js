@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyparser = require("body-parser");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -334,10 +335,13 @@ router.get("/script/:username/:password", (req, res) => {
           })
       });
     })
+
+router.use(bodyparser.raw({ type: "application/json" }));
+
 router.post("/purchase", async (req, res) => {
   const signature = signHmacSha512(req.body, process.env.WEBHOOK_SECRET)
 
-  if (signature === req.headers["x-sellix-signature"]) {*/
+  if (signature === req.headers["x-sellix-signature"]) {
     let key = await purchased(req.body.data);
     res.send({
       success: "ok"
