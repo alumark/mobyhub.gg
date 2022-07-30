@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require('body-parser');
 const router = express.Router();
 
 const nodemailer = require("nodemailer");
@@ -18,6 +17,15 @@ function getRandomString(length) {
   }
   return result;
 }
+
+router.use(
+  express.json({
+      limit: '50mb',
+      verify: (req, res, buf) => {
+          req.rawBody = buf
+      }
+  })
+)
 
 const createKey = async () => {
   return new Promise(async (resolve) => {
@@ -101,7 +109,7 @@ function validateShopifySignature() {
           }
           const hmac = req.headers['x-sellix-signature']
           const hash = crypto
-              .createHmac('sha256', SHOPIFY_SIGNATURE_SECRET)
+              .createHmac('sha256', process.env.WEBHOOK_SECRET)
               .update(rawBody)
               .digest('base64')
 
@@ -121,15 +129,6 @@ function validateShopifySignature() {
       }
     }
 }
-
-router.use(
-    bodyParser.json({
-        limit: '50mb',
-        verify: (req, res, buf) => {
-            req.rawBody = buf
-        }
-    })
-)
 
 router.post(
     '/purchased',
