@@ -7,8 +7,6 @@ const nodemailerExpressHandlebars = require("nodemailer-express-handlebars");
 
 const Key = require("../../models/Key")
 
-const { emailUsername, emailPassword, token } = require("../../config/keys");
-
 function getRandomString(length) {
   var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567891234567890!?-.';
   var result = '';
@@ -24,20 +22,20 @@ const createKey = async () => {
   });
 };
 
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
 const purchased = async order => {
   return new Promise(async (resolve, reject) => {
     if (order.status === "COMPLETED" && order.customer_email) {
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_ADDRESS,
-          pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
-        },
-        tls: {
-          rejectUnauthorized: false
-        }
-      });
-
       const key = await createKey();
 
       if (key) {
