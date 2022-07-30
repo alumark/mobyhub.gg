@@ -19,8 +19,8 @@ function getRandomString(length) {
 }
 
 const createKey = async () => {
-  return new Promise(async (resolve) => {
-    resolve(getRandomString(KEY_LENGTH));
+  return new Promise(async resolve => {
+    resolve(getRandomString(24));
   });
 };
 
