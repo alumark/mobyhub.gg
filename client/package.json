@@ -1,42 +1,29 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "my-app",
   "private": true,
-  "dependencies": {
-    "axios": "^0.18.1",
-    "classnames": "^2.2.6",
-    "jwt-decode": "^2.2.0",
-    "react": "^16.13.1",
-    "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "^16.13.1",
-    "react-redux": "^5.1.2",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.8",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
-  },
-  "proxy": "localhost:5000",
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "npm run watch:css && react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
-    "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css"
+    "dev": "vite --port 5000",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
-    "autoprefixer": "^9.8.1",
-    "postcss-cli": "^7.1.1",
-    "tailwindcss": "^1.4.6"
+    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "postcss-load-config": "^4.0.1",
+    "svelte": "^3.49.0",
+    "svelte-preprocess": "^4.10.7",
+    "tailwindcss": "^3.1.5",
+    "vite": "^3.0.0"
+  },
+  "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/typography": "^0.5.4",
+    "dotenv": "^16.0.1",
+    "svelte-clipboard": "^1.0.0",
+    "svelte-spa-router": "^3.2.0"
   }
 }

@@ -100,12 +100,12 @@ router.post("/register", (req, res) => {
                                 user.password = hash;
                                 user
                                     .save()
-                                    .then(async () => {
-                                        await transporter.sendMail({
+                                    .then(() => {
+                                        transporter.sendMail({
                                             from: `mobyhub <${process.env.EMAIL_ADDRESS}>`,
                                             to: email,
                                             subject: `Your mobyhub account`,
-                                            template: "email",
+                                            template: "emails",
                                             context: {
                                               name: username,
                                               key: key
