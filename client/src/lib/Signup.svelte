@@ -8,7 +8,7 @@
   function signup() {
     axios
       .post("https://mobyhub.herokuapp.com/api/users/register", {username, password, password2: password, key})
-      .then(res => push("/login")) // re-direct to login on successful register
+      .then(() => push("/login")) // re-direct to login on successful register
       .catch(err =>
         errors = err.response.data
       );
@@ -32,7 +32,9 @@
           placeholder="Username"
           bind:value={username}
         />
-        <span class="text-red-700">{errors.username}</span>
+        {#if errors.username}
+          <span class="text-red-700">{errors.username}</span>
+        {/if}
       </div>
       <div class="mb-3">
         <label
@@ -48,7 +50,9 @@
           placeholder="Email"
           bind:value={email}
         />
-        <span class="text-red-700">{errors.email}</span>
+        {#if errors.email}
+          <span class="text-red-700">{errors.email}</span>
+        {/if}
       </div>
       <div class="mb-2">
         <label
@@ -64,7 +68,9 @@
           type="password"
           placeholder="Password"
         />
-        <span class="text-red-700">{errors.password}</span>
+        {#if errors.password}
+          <span class="text-red-700">{errors.password}</span>
+        {/if}
       </div>
       <div class="mb-6">
         <label
@@ -80,7 +86,9 @@
           type="text"
           placeholder="Key"
         />
-        <span class="text-red-700">{errors.key}</span>
+        {#if errors.key}
+          <span class="text-red-700">{errors.key}</span>
+        {/if}
       </div>
       <div class="flex items-center justify-between mb-2">
         <button
