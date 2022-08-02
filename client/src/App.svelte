@@ -9,14 +9,6 @@
 
     import { jwtToken } from './stores/auth.js';
 
-    let routes = {'/login': Login, '/signup': Signup, '/': Home, '*': NotFoundPage}
-
-    $: {
-        if ($jwtToken != null || $jwtToken !== 'null') {
-            routes = {'/dashboard': Dashboard, '/': Home}
-        }
-    }
-
     const logout = () => {
         jwtToken.set(null);
     }
@@ -48,9 +40,16 @@
 <main class='flex items-center justify-center bg-gray-300 h-screen'>
     <div class="flex items-center justify-center">
         <div class="w-full max-w-xs object-center">
-            <Router bind:routes={routes}>
-                
-            </Router>
+            {#if $jwtToken == 'null' || $jwtToken == null}
+                <Router routes={{'/login': Login, '/signup': Signup, '/': Home, '*': NotFoundPage}}>
+                    
+                </Router>
+            {:else}
+                <Router routes={{'/dashboard': Dashboard, '/': Home, '*': NotFoundPage}}>
+                        
+                </Router>
+            {/if}
+            
             <p class="text-center text-gray-500 text-xs">
                 &copy;2022 Alumark. All rights reserved.
             </p>
