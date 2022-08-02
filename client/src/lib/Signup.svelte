@@ -4,7 +4,7 @@
 
   let username, password, email, key
 
-  let errors = {}
+  let errors = {username:'', password:'', key:'', email: ''}
   function signup() {
     axios
       .post("/api/users/register", {username, password, password2: password, key})
@@ -64,6 +64,7 @@
           type="password"
           placeholder="Password"
         />
+        <span class="text-red-700">{errors.password}</span>
       </div>
       <div class="mb-6">
         <label
