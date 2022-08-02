@@ -14,6 +14,10 @@ export const user = writable(null);
 // Anytime the store changes, update the local storage value.
 jwtToken.subscribe((value) => {
     localStorage.setItem('jwtToken', value)
-    let decoded = jwt_decode(value)
-    user.set(decoded.username)
+    try {
+        let decoded = jwt_decode(value)
+        user.set(decoded.username)
+    } catch (e) {
+        console.log(`error: ${e}`)
+    }
 });
