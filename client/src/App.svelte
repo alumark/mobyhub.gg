@@ -1,16 +1,18 @@
 <script>
-    import Router from 'svelte-spa-router';
+    import Router, {push} from 'svelte-spa-router';
 
     import Signup from './lib/Signup.svelte';
     import Home from './lib/Home.svelte';
     import Login from './lib/Login.svelte';
     import Dashboard from './lib/Dashboard.svelte';
+    import RedirectToLogin from './lib/RedirectToLogin.svelte';
     import NotFoundPage from './lib/NotFoundPage.svelte';
 
     import { jwtToken } from './stores/auth.js';
 
     const logout = () => {
         jwtToken.set(null);
+        push('/login');
     }
 </script>
 
@@ -41,7 +43,7 @@
     <div class="flex items-center justify-center">
         <div class="w-full max-w-xs object-center">
             {#if $jwtToken == 'null' || $jwtToken == null}
-                <Router routes={{'/login': Login, '/signup': Signup, '/': Home, '*': NotFoundPage}}>
+                <Router routes={{'/login': Login, '/dashboard': RedirectToLogin, '/signup': Signup, '/': Home, '*': NotFoundPage}}>
                     
                 </Router>
             {:else}
