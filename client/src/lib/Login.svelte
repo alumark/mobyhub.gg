@@ -2,9 +2,8 @@
   let username, password
 
   import { push } from 'svelte-spa-router';
-  import { jwtToken, user } from '../stores/auth.js';
+  import { jwtToken } from '../stores/auth.js';
   import axios from 'axios';
-  import jwt_decode from "jwt-decode";
 
   const login = () => {
       axios

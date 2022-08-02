@@ -7,7 +7,7 @@
   let errors = {username:'', password:'', key:'', email: ''}
   function signup() {
     axios
-      .post("/api/users/register", {username, password, password2: password, key})
+      .post("https://mobyhub.herokuapp.com/api/users/register", {username, password, password2: password, key})
       .then(res => push("/login")) // re-direct to login on successful register
       .catch(err =>
         errors = err.response.data
@@ -17,7 +17,7 @@
 
 <div>
   <div class="w-full max-w-xs object-center">
-    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" id="data" on:submit|preventDefault={signup}>
+    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" id="data">
       <div class="mb-3">
         <label
           class="block text-gray-700 text-sm font-bold mb-2"
@@ -86,6 +86,7 @@
         <button
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="button"
+          on:click|preventDefault={signup}
         >
           Sign Up
         </button>
