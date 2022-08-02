@@ -1,8 +1,17 @@
 <script>
+  import { push } from 'svelte-spa-router';
+  import axios from 'axios';
+
   let username, password, email, key
 
+  let errors = {}
   function signup() {
-
+    axios
+      .post("/api/users/register", {username, password, password2: password, key})
+      .then(res => push("/login")) // re-direct to login on successful register
+      .catch(err =>
+        errors = err.response.data
+      );
   }
 </script>
 
@@ -23,6 +32,7 @@
           placeholder="Username"
           bind:value={username}
         />
+        <span class="text-red-700">{errors.username}</span>
       </div>
       <div class="mb-3">
         <label
@@ -38,6 +48,7 @@
           placeholder="Email"
           bind:value={email}
         />
+        <span class="text-red-700">{errors.email}</span>
       </div>
       <div class="mb-2">
         <label
@@ -68,6 +79,7 @@
           type="text"
           placeholder="Key"
         />
+        <span class="text-red-700">{errors.key}</span>
       </div>
       <div class="flex items-center justify-between mb-2">
         <button
