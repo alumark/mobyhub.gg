@@ -1,6 +1,7 @@
 <script>
   let username, password
 
+  import { push } from 'svelte-spa-router';
   import { jwtToken, user } from '../stores/auth.js';
   import axios from 'axios';
   import jwt_decode from "jwt-decode";
@@ -11,6 +12,7 @@
         .then(res => {
           const { token } = res.data;
           jwtToken.set(token);
+          push('/dashboard');
         })
         .catch(err => console.log(`[error]: ${err}`));
   }
