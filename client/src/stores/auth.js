@@ -15,5 +15,5 @@ export const user = writable(null);
 jwtToken.subscribe((value) => {
     localStorage.setItem('jwtToken', value)
     let decoded = jwt_decode(value)
-    user.set(decoded.payload.username);
+    user.set(decoded.username)
 });
