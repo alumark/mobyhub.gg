@@ -5,7 +5,7 @@
   import { jwtToken } from '../stores/auth.js';
   import axios from 'axios';
 
-  let errors = {username:'', password:'', key:'', email: ''}
+  let errors = {username:'', password:'', password2: '', key:'', email: ''}
   const login = () => {
       axios
         .post("/api/users/login", { username, password })

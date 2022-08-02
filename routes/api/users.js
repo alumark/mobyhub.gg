@@ -144,21 +144,20 @@ router.post("/register", (req, res) => {
 // @access Public
 router.post("/login", (req, res) => {
     // Form validation
-    const { errors, isValid } = validateLoginInput(req.body);
+    let { errors, isValid } = validateLoginInput(req.body);
   // Check validation
-    if (!isValid) {
-        return res.status(400).json(errors);
-    }
     const username = req.body.username;
     const password = req.body.password;
+
+    if (!isValid) {
+      req.status(400).json(errors)
+    }
+
         // Find user by email
     User.findOne({ username }).then(user => {
         // Check if user exists
         if (!user) {
-            return res.status(400).json({ username: "Username not found" });
-        }
-        if (user.blacklisted) {
-          return res.status(403).json({ username: `You have been blacklisted: "${user.blacklistedReason}"` })
+            errors.username = "Username not found"
         }
         bcrypt.compare(password, user.password).then(isMatch => {
             if (isMatch) {
@@ -175,16 +174,22 @@ router.post("/login", (req, res) => {
                         expiresIn: 31556926 // 1 year in seconds
                     },
                     (err, token) => {
-                        res.json({
-                        success: true,
-                        token: "Bearer " + token
+                        res.status(200).json({
+                          success: true,
+                          token: "Bearer " + token
                         });
                     }
                 );
             } else {
+                if (user.blacklisted) {
+                  return res.status(403).json({ username: `You have been blacklisted: "${user.reason || 'being a dumbass'}"` })
+                }
+
+                errors.password = "Invalid password!"
+
                 return res
                     .status(400)
-                    .json({ password: "Password incorrect" });
+                    .json(errors);
             }
         });
     });

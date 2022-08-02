@@ -5,9 +5,9 @@
   let username, password, email, key
 
   let errors = {username:'', password:'', key:'', email: ''}
-  function signup() {
+  const signup = () => {
     axios
-      .post("https://mobyhub.herokuapp.com/api/users/register", {username, email, password, password2: password, key})
+      .post("/api/users/register", {username, email, password, password2: password, key})
       .then(() => push("/login")) // re-direct to login on successful register
       .catch(err =>
         errors = err.response.data
