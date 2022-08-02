@@ -5,6 +5,7 @@
   import { jwtToken } from '../stores/auth.js';
   import axios from 'axios';
 
+  let errors = {username:'', password:'', key:'', email: ''}
   const login = () => {
       axios
         .post("/api/users/login", { username, password })
@@ -13,7 +14,7 @@
           jwtToken.set(token);
           push('/dashboard');
         })
-        .catch(err => console.log(`[error]: ${err}`));
+        .catch(err => errors = err.response.data);
   }
 </script>
 
@@ -34,6 +35,9 @@
           placeholder="Username"
           bind:value={username}
         />
+        {#if errors.username}
+          <span class="text-red-700">{errors.username}</span>
+        {/if}
       </div>
       <div class="mb-2">
         <label
@@ -49,6 +53,9 @@
           type="password"
           placeholder="Password"
         />
+        {#if errors.password}
+          <span class="text-red-700">{errors.password}</span>
+        {/if}
       </div>
       <div class="flex items-center justify-between mb-2">
         <button
