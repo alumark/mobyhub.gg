@@ -1,0 +1,13 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nav-item {
+    @apply mx-1 shadow px-3 py-1 my-1 rounded-md hover:bg-slate-100
+}
+
+.home-button {
+    @apply font-semibold self-center justify-start mr-4 text-xl
+
+}
