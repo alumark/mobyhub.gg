@@ -12,6 +12,7 @@
           const { token } = res.data;
           jwtToken.set(token);
           const decoded = jwt_decode(token);
+          console.log(decoded)
           user.set(decoded)
         })
         .catch(err => console.log(`[error]: ${err}`));
