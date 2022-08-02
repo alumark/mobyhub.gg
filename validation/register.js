@@ -25,7 +25,6 @@ module.exports = function validateRegisterInput(data) {
     }
 
     if (!Validator.isLength(data.username, { min: 3, max: 32 })) {
-        console.log("fuck you what the fuck")
         errors.username = "Username must be at least 3 characters.";
     }
 
