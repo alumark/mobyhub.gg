@@ -54,8 +54,6 @@
             <p class="text-center text-gray-500 text-xs">
                 &copy;2022 Alumark. All rights reserved.
             </p>
-
-            hi
         </div>
     </div> 
 </main>
