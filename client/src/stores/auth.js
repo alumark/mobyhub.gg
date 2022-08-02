@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store'
+import jwt_decode from "jwt-decode";
 
 // Get the value out of storage on load.
 const stored = localStorage.getItem('jwtToken');
@@ -11,4 +12,7 @@ export const jwtToken = writable(stored || null);
 export const user = writable(null);
 
 // Anytime the store changes, update the local storage value.
-jwtToken.subscribe((value) => localStorage.setItem('jwtToken', value));
+jwtToken.subscribe((value) => {
+    localStorage.setItem('jwtToken', value)
+    user.set(jwt_decode(value));
+});
