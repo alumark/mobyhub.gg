@@ -4,7 +4,7 @@
 
   let username, password, email, key
 
-  let errors = {username:'', password:'', key:'', email: ''}
+  let errors = {username:'', password:'', password2: '', key:'', email: ''}
   const signup = () => {
     axios
       .post("/api/users/register", {username, email, password, password2: password, key})
