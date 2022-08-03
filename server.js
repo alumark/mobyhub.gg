@@ -65,13 +65,16 @@ mongoose
         .then(() => console.log("Successfully connected to MongoDB database!"))
         .catch((error) => console.log(error));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 80;
 
 if (process.env.NODE_ENV == 'production') {
     app.use(express.static(path.join(__dirname, "client", "dist")))
 } else {
     require('dotenv').config()
-    app.use(express.static(path.join(__dirname, "client", "dist")))
+    app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+        next();
+    });
 }
 
 app.listen(PORT, () => console.log(`Server up and running on port ${PORT}!`));

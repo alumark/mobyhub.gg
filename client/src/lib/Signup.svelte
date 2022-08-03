@@ -7,7 +7,7 @@
   let errors = {username:'', password:'', key:'', email: ''}
   const signup = () => {
     axios
-      .post("/api/users/register", {username, email, password, password2: password, key})
+      .post("http://localhost:80/api/users/register", {username, email, password, password2: password, key})
       .then(() => push("/login")) // re-direct to login on successful register
       .catch(err =>
         errors = err.response.data
@@ -100,7 +100,7 @@
         </button>
         <a
           class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-          href="https://sellix.io/product/5ee3fb669c00b"
+          href="https://moby.sellix.io/product/5ee3fb669c00b"
         >
           Don't have a key?
         </a>
