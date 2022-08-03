@@ -8,7 +8,7 @@
   let errors = {username:'', password:'', password2: '', key:'', email: ''}
   const login = () => {
       axios
-        .post("http://localhost:80/api/users/login", { username, password })
+        .post("/api/users/login", { username, password })
         .then(res => {
           const { token } = res.data;
           jwtToken.set(token);

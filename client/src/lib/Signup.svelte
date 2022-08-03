@@ -7,7 +7,7 @@
   let errors = {username:'', password:'', key:'', email: ''}
   const signup = () => {
     axios
-      .post("http://localhost:80/api/users/register", {username, email, password, password2: password, key})
+      .post("/api/users/register", {username, email, password, password2: password, key})
       .then(() => push("/login")) // re-direct to login on successful register
       .catch(err =>
         errors = err.response.data
