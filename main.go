@@ -170,6 +170,7 @@ func main() {
 		}
 
 		if err := CheckAuthentication(user, []byte(password)); err != nil {
+			fmt.Printf(err.Error())
 			return c.Status(400).JSON(&fiber.Map{
 				"password": err.Error(),
 			})
