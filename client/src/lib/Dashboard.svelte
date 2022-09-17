@@ -9,7 +9,7 @@
 
   <span class="flex justify-center">
     <Clipboard
-      text='loadstring(game:HttpGet("https://mobyhub.herokuapp.com/loadstring", true))()'
+      text='loadstring(game:HttpGet("https://mobyhub.gg/loadstring", true))()'
       let:copy
       on:copy={() => {
         console.log('Has Copied');
