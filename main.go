@@ -107,8 +107,9 @@ func main() {
 		}
 
 		if err := CheckAuthentication(user, []byte(payload.Password)); err != nil {
+			fmt.Println(err.Error())
 			return c.Status(400).JSON(&fiber.Map{
-				"password": err,
+				"password": err.Error(),
 			})
 		}
 
