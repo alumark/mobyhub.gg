@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -298,14 +297,14 @@ func main() {
 
 func CheckAuthentication(user User, password []byte) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), password); err != nil {
-		return errors.New("Invalid password")
+		return fmt.Errorf("Invalid password")
 	} else {
 		if user.Blacklisted != false {
 			reason := user.Reason
 			if reason == "" {
 				reason = "You have been blacklisted"
 			}
-			return errors.New(fmt.Sprintf("You are blacklisted: %s", reason))
+			return fmt.Errorf("You are blacklisted: %s", reason)
 		}
 
 		return nil
