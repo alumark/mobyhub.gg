@@ -33,8 +33,8 @@ type User struct {
 
 type Key struct {
 	ID   primitive.ObjectID `bson:"_id,omitempty"`
-	Key  string             `bson:"blacklisted,omitempty"`
-	Used bool               `bson:"reason,omitempty"`
+	Key  string             `bson:"key,omitempty"`
+	Used bool               `bson:"used,omitempty"`
 }
 
 type Error struct {
@@ -91,6 +91,7 @@ func main() {
 		}{}
 
 		if err := c.BodyParser(&payload); err != nil {
+			fmt.Println(err)
 			return err
 		}
 
@@ -106,10 +107,6 @@ func main() {
 			return c.Status(400).JSON(valid)
 		}
 
-		if err := c.BodyParser(&payload); err != nil {
-			return err
-		}
-
 		if err := CheckAuthentication(user, []byte(payload.Password)); err != nil {
 			return c.Status(400).JSON(&fiber.Map{
 				"password": err,
@@ -123,7 +120,7 @@ func main() {
 		claims["username"] = user.Username
 		claims["exp"] = time.Now().Add(31556926).Unix()
 
-		tokenString, err := token.SignedString(os.Getenv("SECRET_OR_KEY"))
+		tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_OR_KEY")))
 
 		if err != nil {
 			return err
@@ -277,7 +274,7 @@ func main() {
 			return err
 		}
 
-		result, err := users.InsertOne(context.TODO(), bson.D{{"username", payload.Username}, {"password", string(hashed)}, {"email", payload.Username}})
+		result, err := users.InsertOne(context.TODO(), bson.D{{"username", payload.Username}, {"password", string(hashed)}, {"email", payload.Email}})
 
 		if err != nil {
 			return err
@@ -292,7 +289,11 @@ func main() {
 
 	app.Static("/", "./client/dist")
 
-	app.Listen(":3000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	app.Listen(fmt.Sprintf(":%v", port))
 }
 
 func CheckAuthentication(user User, password []byte) error {
