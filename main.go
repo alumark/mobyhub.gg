@@ -274,7 +274,7 @@ func main() {
 			})
 		}
 
-		send(payload.Data.Email, "Key: Your key:"+generate_key(24, charset)+"enter it at https://mobyhub.herokuapp.com", payload.Data.Uniqid)
+		send(payload.Data.Email, "Your key:"+generate_key(24, charset)+"\nenter it at https://mobyhub.gg", payload.Data.Uniqid)
 
 		return c.Status(200).JSON(&fiber.Map{
 			"status": "ok",
