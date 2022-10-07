@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -47,6 +50,10 @@ type RegisterError struct {
 	Password2 string `json:"password2"`
 	Key       string `json:"key"`
 	Email     string `json:"email"`
+}
+
+type JSONData struct {
+	Email string `json:"customer_email"`
 }
 
 var rxEmail = regexp.MustCompile(".+@.+\\..+")
@@ -200,6 +207,36 @@ func main() {
 		}
 
 		return c.SendString(string(body))
+	})
+
+	app.Post("/api/webhook/purchased", func(c *fiber.Ctx) error {
+		payload := struct {
+			Event string `json:"event"`
+			Data  struct {
+				Email string `json:"customer_email"`
+			} `json:"data"`
+		}{}
+
+		if err := c.BodyParser(&payload); err != nil {
+			return err
+		}
+
+		hash := hmac.New(sha256.New, []byte(os.Getenv("WEBHOOK_SECRET")))
+		hash.Write(c.Body())
+		final_hash := hex.EncodeToString(hash.Sum(nil))
+
+		fmt.Printf("%s", payload.Data.Email)
+
+		if final_hash != c.GetReqHeaders()["X-Sellix-Signature"] {
+			return c.Status(403).JSON(&fiber.Map{
+				"status": "unauthorized",
+			})
+		}
+
+		return c.Status(200).JSON(&fiber.Map{
+			"status": "ok",
+		})
+
 	})
 
 	app.Post("/api/users/register", func(c *fiber.Ctx) error {
