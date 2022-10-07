@@ -274,7 +274,13 @@ func main() {
 			})
 		}
 
-		send(payload.Data.Email, "Your key:"+generate_key(24, charset)+"\nenter it at https://mobyhub.gg", payload.Data.Uniqid)
+		key := generate_key(24, charset)
+		send(payload.Data.Email, "Your key:"+key+"\nenter it at https://mobyhub.gg", payload.Data.Uniqid)
+
+		_, err := keys.InsertOne(context.TODO(), bson.D{{"key": key}})
+		if err != nil {
+			return err
+		}
 
 		return c.Status(200).JSON(&fiber.Map{
 			"status": "ok",
