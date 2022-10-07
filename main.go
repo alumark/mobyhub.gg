@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"net/smtp"
 	"os"
 	"regexp"
 	"time"
@@ -64,6 +66,42 @@ var (
 	users  *mongo.Collection
 	keys   *mongo.Collection
 )
+
+var seededRand *rand.Rand = rand.New(
+	rand.NewSource(time.Now().UnixNano()))
+
+const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567891234567890!?-."
+
+func generate_key(length int, charset string) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+
+	return string(b)
+}
+
+func send(email string, body string, uniqid string) {
+	from := os.Getenv("EMAIL_ADDRESS")
+	password := os.Getenv("EMAIL_PASSWORD")
+	to := email
+
+	msg := "from: mobyhub <" + from + ">\n" +
+		"to: " + to + "\n" +
+		"Subject: mobyhub order <" + uniqid + ">\n\n" +
+		body
+
+	err := smtp.SendMail("smtp.gmail.com:587",
+		smtp.PlainAuth("", from, password, "smtp.gmail.com"),
+		from, []string{to}, []byte(msg))
+
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return
+	}
+
+	log.Printf("sent")
+}
 
 func main() {
 	err := godotenv.Load()
@@ -213,13 +251,16 @@ func main() {
 		payload := struct {
 			Event string `json:"event"`
 			Data  struct {
-				Email string `json:"customer_email"`
+				Email  string `json:"customer_email"`
+				Uniqid string `json:"uniqid"`
 			} `json:"data"`
 		}{}
 
 		if err := c.BodyParser(&payload); err != nil {
 			return err
 		}
+
+		fmt.Printf("%+v\n", payload)
 
 		hash := hmac.New(sha512.New, []byte(os.Getenv("WEBHOOK_SECRET")))
 		hash.Write(c.Body())
@@ -232,6 +273,8 @@ func main() {
 				"status": "unauthorized",
 			})
 		}
+
+		send(payload.Data.Email, "Key: Your key:"+generate_key(24, charset), "enter it at https://mobyhub.herokuapp.com", payload.Data.Uniqid)
 
 		return c.Status(200).JSON(&fiber.Map{
 			"status": "ok",
