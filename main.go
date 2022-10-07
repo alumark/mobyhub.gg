@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"crypto/hmac"
-	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
@@ -221,7 +221,7 @@ func main() {
 			return err
 		}
 
-		hash := hmac.New(sha256.New, []byte(os.Getenv("WEBHOOK_SECRET")))
+		hash := hmac.New(sha512.New, []byte(os.Getenv("WEBHOOK_SECRET")))
 		hash.Write(c.Body())
 		final_hash := hex.EncodeToString(hash.Sum(nil))
 
