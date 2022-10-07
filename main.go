@@ -277,7 +277,7 @@ func main() {
 		key := generate_key(24, charset)
 		send(payload.Data.Email, "Your key:"+key+"\nenter it at https://mobyhub.gg", payload.Data.Uniqid)
 
-		_, err := keys.InsertOne(context.TODO(), bson.D{{"key": key}})
+		_, err := keys.InsertOne(context.TODO(), bson.M{"key": key})
 		if err != nil {
 			return err
 		}
