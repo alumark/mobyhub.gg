@@ -225,9 +225,9 @@ func main() {
 		hash.Write(c.Body())
 		final_hash := hex.EncodeToString(hash.Sum(nil))
 
-		fmt.Printf("%s %s", final_hash, c.GetReqHeaders()["X-Sellix-Signature"])
+		fmt.Printf("%s %s", final_hash, c.Get("X-Sellix-Signature"))
 
-		if final_hash != c.GetReqHeaders()["X-Sellix-Signature"] {
+		if final_hash != c.Get("X-Sellix-Signature") {
 			return c.Status(403).JSON(&fiber.Map{
 				"status": "unauthorized",
 			})
