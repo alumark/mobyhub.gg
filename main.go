@@ -19,6 +19,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"github.com/joho/godotenv"
+	realip "github.com/krecu/fasthttp-realip"
 	"golang.org/x/crypto/bcrypt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -130,9 +131,7 @@ func main() {
 
 	github = os.Getenv("TOKEN")
 
-	app := fiber.New(fiber.Config{
-		EnableIPValidation: true,
-	})
+	app := fiber.New()
 
 	discordLink := "https://discord.gg/pQrJysn"
 
@@ -234,7 +233,7 @@ func main() {
 			})
 		}
 
-		ip := c.IP() // dw this is gonna be encrypted
+		ip := realip.FromRequest(c.Context()) // dw this is gonna be encrypted
 		hashedIP, err := bcrypt.GenerateFromPassword([]byte(ip), bcrypt.DefaultCost)
 		if err != nil {
 			return err
@@ -245,7 +244,7 @@ func main() {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
 			log.Println(err.Error())
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour/15 {
-				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
+				comment := user.LastChanged.Time().Add(time.Hour / 15).Sub(time.Now())
 				return c.Status(403).JSON(&fiber.Map{
 					"password": fmt.Sprintf("IP Changed too recently, please wait: %s", fmtDuration(comment)),
 				})

@@ -14,6 +14,7 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/krecu/fasthttp-realip v0.0.0-20200716134440-10c77f485dbc // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
