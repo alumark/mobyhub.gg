@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
 	"net/smtp"
@@ -103,6 +104,13 @@ func send(email string, body string, uniqid string) {
 	}
 
 	log.Printf("sent")
+}
+
+func fmtDuration(time time.Duration) string {
+	seconds := math.Round(time.Seconds())
+	minutes := int(math.Floor(seconds / 60))
+	remainingSeconds := int(seconds) % 60
+	return fmt.Sprintf("%d minutes %d seconds", minutes, remainingSeconds)
 }
 
 func main() {
@@ -236,7 +244,7 @@ func main() {
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
 				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
 				return c.Status(403).JSON(&fiber.Map{
-					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", comment.Format("4 minute(s) 5 second(s)")),
+					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", fmtDuration(comment)),
 				})
 			} else {
 				result := users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"$set": bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)}})
