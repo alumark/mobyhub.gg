@@ -239,8 +239,6 @@ func main() {
 			return err
 		}
 
-		fmt.Println(ip) // debugging this should not be allowed
-
 		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
 			log.Println(err.Error())
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour/15 {
