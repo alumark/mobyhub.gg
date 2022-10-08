@@ -236,7 +236,7 @@ func main() {
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
 				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
 				return c.Status(403).JSON(&fiber.Map{
-					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", int(comment.Abs().Minutes()), int(comment.Abs().Seconds())),
+					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", comment.Format("4 minute(s) 5 second(s)")),
 				})
 			} else {
 				result := users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"$set": bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)}})
