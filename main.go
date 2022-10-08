@@ -231,6 +231,7 @@ func main() {
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(hashedIP), []byte(user.IP)); err != nil {
+			log.Printf("%s %s", hashedIP, user.IP)
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
 
 				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
