@@ -239,7 +239,8 @@ func main() {
 					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", int(comment.Abs().Minutes()), int(comment.Abs().Seconds())),
 				})
 			} else {
-				users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)})
+				result := users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)})
+				log.Printf("%+v\n", result)
 			}
 		}
 
