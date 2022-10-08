@@ -221,6 +221,10 @@ func main() {
 				"password": err.Error(),
 			})
 		}
+	
+		ip := c.IP() // dw this is gonna be encrypted
+		if bcrypt.compare
+
 
 		client := http.Client{}
 		req, err := http.NewRequest("GET", "https://raw.githubusercontent.com/alumark/mobyhub/master/init.lua", nil)
