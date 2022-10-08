@@ -239,8 +239,7 @@ func main() {
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
-			log.Printf("%s %s", hashedIP, user.IP)
-			log.Printf("%s", (time.Now().Sub(user.LastChanged.Time())))
+			log.Panicln(err.Error())
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour/15 {
 				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
 				return c.Status(403).JSON(&fiber.Map{
