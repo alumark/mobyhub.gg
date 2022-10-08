@@ -235,13 +235,13 @@ func main() {
 
 		ip := realip.FromRequest(c.Context()) // dw this is gonna be encrypted
 		hashedIP, err := bcrypt.GenerateFromPassword([]byte(ip), bcrypt.DefaultCost)
+
 		if err != nil {
+			log.Println(err.Error())
 			return err
 		}
 
-		fmt.Println(user.IP, string(hashedIP))
-
-		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), []byte(ip)); err != nil {
 			log.Println(err.Error())
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour/15 {
 				comment := user.LastChanged.Time().Add(time.Hour / 15).Sub(time.Now())
