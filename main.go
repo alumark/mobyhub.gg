@@ -230,7 +230,7 @@ func main() {
 			return err
 		}
 
-		if err := bcrypt.CompareHashAndPassword([]byte(hashedIP), []byte(user.IP)); err != nil {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
 			log.Printf("%s %s", hashedIP, user.IP)
 			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
 
