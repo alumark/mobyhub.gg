@@ -130,7 +130,9 @@ func main() {
 
 	github = os.Getenv("TOKEN")
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		EnableIPValidation: true,
+	})
 
 	discordLink := "https://discord.gg/pQrJysn"
 
