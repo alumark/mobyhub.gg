@@ -33,6 +33,8 @@ type User struct {
 	Password    string             `bson:"password,omitempty"`
 	Blacklisted bool               `bson:"blacklisted,omitempty"`
 	Reason      string             `bson:"reason,omitempty"`
+	IP          string             `bson:"ip,omitempty"`
+	LastChanged primitive.DateTime `bson:"lastChanged,omitempty"`
 }
 
 type Key struct {
@@ -221,10 +223,23 @@ func main() {
 				"password": err.Error(),
 			})
 		}
-	
-		ip := c.IP() // dw this is gonna be encrypted
-		if bcrypt.compare
 
+		ip := c.IP() // dw this is gonna be encrypted
+		hashedIP, err := bcrypt.GenerateFromPassword([]byte(ip), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(hashedIP), []byte(user.IP)); err != nil {
+
+			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
+				return c.Status(403).JSON(&fiber.Map{
+					"password": fmt.Sprintf("IP Changed too recently, please wait: %s", user.LastChanged.Time().Add(time.Hour)),
+				})
+			} else {
+				users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)})
+			}
+		}
 
 		client := http.Client{}
 		req, err := http.NewRequest("GET", "https://raw.githubusercontent.com/alumark/mobyhub/master/init.lua", nil)
