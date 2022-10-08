@@ -239,7 +239,7 @@ func main() {
 			return err
 		}
 
-		fmt.Println(user.IP, hashedIP)
+		fmt.Println(user.IP, string(hashedIP))
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
 			log.Println(err.Error())
