@@ -241,10 +241,10 @@ func main() {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.IP), hashedIP); err != nil {
 			log.Printf("%s %s", hashedIP, user.IP)
 			log.Printf("%s", (time.Now().Sub(user.LastChanged.Time())))
-			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour {
+			if time.Now().Sub(user.LastChanged.Time()) <= time.Hour/15 {
 				comment := user.LastChanged.Time().Add(time.Hour).Sub(time.Now())
 				return c.Status(403).JSON(&fiber.Map{
-					"password": fmt.Sprintf("IP Changed too recently, please wait: %d minutes %d seconds", fmtDuration(comment)),
+					"password": fmt.Sprintf("IP Changed too recently, please wait: %s", fmtDuration(comment)),
 				})
 			} else {
 				result := users.FindOneAndUpdate(context.TODO(), bson.M{"username": username}, bson.M{"$set": bson.M{"lastChanged": time.Now(), "ip": string(hashedIP)}})
