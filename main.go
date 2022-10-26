@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"log"
 	"math"
 	"math/rand"
@@ -15,6 +16,10 @@ import (
 	"os"
 	"regexp"
 	"time"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	docker "github.com/docker/docker/client"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
@@ -438,7 +443,61 @@ func CheckAuthentication(user User, password []byte) error {
 
 func obfuscate(script string) string {
 	id := generate_key(12, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-	return ""
+	newpath := filepath.Join(".", id)
+	err := os.MkdirAll(path, os.ModePerm")
+	if err != nil {
+		log.Panic(err)
+	}
+	f, err := os.Create(filepath.Join(newpath, "in.lua")
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	defer f.Close()
+	_, err2 := f.WriteString(script)
+	if err2 != nil {
+		log.Panic(err)
+	}
+
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		log.Panic(err)
+	}
+
+	imageName := "moaufmklo/docker-ironbrew"
+
+	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	if err != nil {
+		log.Panic(err)
+	}
+	defer out.Close()
+	io.Copy(os.Stdout, out)
+
+	resp, err := cli.ContainerCreate(ctx, &container.Config{
+		Image: imageName,
+	}, &container.HostConfig{
+        	AutoRemove: true,
+		Binds: []string{
+			fmt.Sprintf("%s/:/data", newpath)
+		}	
+	}, nil, nil, "")
+	if err != nil {
+		log.Panic(err)
+	}
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		log.Panic(err)
+	}
+
+	content, err := os.ReadFile(filepath.Join(newpath, "out.lua"))
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return content
 }
 
 func LoadMongoDriver() (*mongo.Client, error) {
