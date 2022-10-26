@@ -92,7 +92,7 @@ func send(email string, body string, uniqid string) {
 
 	msg := "from: mobyhub <" + from + ">\n" +
 		"to: " + to + "\n" +
-		"Subject: mobyhub order <" + uniqid + ">\n\n" +
+		"Subject: mobyhub order - " + uniqid + "\n\n" +
 		body
 
 	err := smtp.SendMail("smtp.gmail.com:587",
