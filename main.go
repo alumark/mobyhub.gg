@@ -279,6 +279,8 @@ func main() {
 			return err
 		}
 
+final := obfuscate(string(body))
+
 		return c.SendString(string(body))
 	})
 
@@ -432,6 +434,11 @@ func CheckAuthentication(user User, password []byte) error {
 
 		return nil
 	}
+}
+
+func obfuscate(script string) string {
+	id := generate_key(12, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	return ""
 }
 
 func LoadMongoDriver() (*mongo.Client, error) {
