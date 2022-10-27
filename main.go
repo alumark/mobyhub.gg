@@ -19,7 +19,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	docker "github.com/docker/docker/client"
+	"github.com/docker/docker/client"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
