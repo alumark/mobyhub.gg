@@ -14,12 +14,13 @@ import (
 	"net/http"
 	"net/smtp"
 	"os"
+	"io"
 	"regexp"
 	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
+	docker_client "github.com/docker/docker/client"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
@@ -286,7 +287,7 @@ func main() {
 
 final := obfuscate(string(body))
 
-		return c.SendString(string(body))
+		return c.SendString(string(final))
 	})
 
 	app.Post("/api/webhook/purchased", func(c *fiber.Ctx) error {
@@ -444,12 +445,11 @@ func CheckAuthentication(user User, password []byte) error {
 func obfuscate(script string) string {
 	id := generate_key(12, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	newpath := filepath.Join(".", id)
-	err := os.MkdirAll(path, os.ModePerm")
+	err := os.MkdirAll(newpath, os.ModePerm)
 	if err != nil {
 		log.Panic(err)
 	}
-	f, err := os.Create(filepath.Join(newpath, "in.lua")
-
+	f, err := os.Create(filepath.Join(newpath, "in.lua"))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -461,7 +461,7 @@ func obfuscate(script string) string {
 	}
 
 	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := docker_client.NewClientWithOpts(docker_client.FromEnv, docker_client.WithAPIVersionNegotiation())
 	if err != nil {
 		log.Panic(err)
 	}
@@ -480,8 +480,8 @@ func obfuscate(script string) string {
 	}, &container.HostConfig{
         	AutoRemove: true,
 		Binds: []string{
-			fmt.Sprintf("%s/:/data", newpath)
-		}	
+			fmt.Sprintf("%s/:/data", newpath),
+		},
 	}, nil, nil, "")
 	if err != nil {
 		log.Panic(err)
@@ -497,7 +497,7 @@ func obfuscate(script string) string {
 		log.Panic(err)
 	}
 
-	return content
+	return string(content)
 }
 
 func LoadMongoDriver() (*mongo.Client, error) {
