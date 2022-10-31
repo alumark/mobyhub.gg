@@ -449,16 +449,17 @@ func obfuscate(script string) string {
 	if err != nil {
 		log.Panic(err)
 	}
-	f, err := os.Create(filepath.Join(newpath, "in.lua"))
+	f, err := os.Create(filepath.Join(".", id, "in.lua"))
 	if err != nil {
 		log.Panic(err)
 	}
 
-	defer f.Close()
 	_, err2 := f.WriteString(script)
 	if err2 != nil {
 		log.Print(err.Error())
 	}
+
+	f.Close()
 
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
