@@ -463,7 +463,7 @@ func obfuscate(script string) string {
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	imageName := "moaufmklo/docker-ironbrew"
@@ -477,17 +477,17 @@ func obfuscate(script string) string {
 		},
 	}, nil, nil, "")
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	content, err := os.ReadFile(filepath.Join(".", id, "out.lua"))
 
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	if content == nil {
