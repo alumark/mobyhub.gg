@@ -132,7 +132,7 @@ func main() {
 	keys = mongo_client.Database("Cluster0").Collection("keys")
 
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 
 	github = os.Getenv("TOKEN")
@@ -285,7 +285,10 @@ func main() {
 			return err
 		}
 
-		final := obfuscate(string(body))
+		final, err := obfuscate(string(body))
+		if err != nil {
+			return err
+		}
 
 		return c.SendString(string(final))
 	})
@@ -442,21 +445,21 @@ func CheckAuthentication(user User, password []byte) error {
 	}
 }
 
-func obfuscate(script string) string {
+func obfuscate(script string) (string, error) {
 	id := generate_key(12, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	newpath := filepath.Join(".", id)
 	err := os.MkdirAll(newpath, os.ModePerm)
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 	f, err := os.Create(filepath.Join(".", id, "in.lua"))
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 
 	_, err2 := f.WriteString(script)
 	if err2 != nil {
-		panic(err2)
+		return script, err2
 	}
 
 	defer f.Close()
@@ -464,12 +467,12 @@ func obfuscate(script string) string {
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 
 	out, err := cli.ImagePull(ctx, "docker.io/library/moaufmklo", types.ImagePullOptions{})
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 	defer out.Close()
 	io.Copy(os.Stdout, out)
@@ -483,11 +486,11 @@ func obfuscate(script string) string {
 		},
 	}, nil, nil, "")
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		panic(err)
+		return script, err
 	}
 
 	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
@@ -502,14 +505,14 @@ func obfuscate(script string) string {
 	content, err := os.ReadFile(filepath.Join(".", id, "out.lua"))
 
 	if err != nil {
-		panic(err)
+		return script, err
 	}
 
 	if content == nil {
-		return string("bruh")
+		return script, nil
 	}
 
-	return string(content)
+	return string(content), nil
 }
 
 func LoadMongoDriver() (*mongo.Client, error) {
