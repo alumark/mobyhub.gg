@@ -462,7 +462,7 @@ func obfuscate(script string) string {
 	f.Close()
 
 	ctx := context.Background()
-	cli, err := client.NewEnvClient(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.NewEnvClient()
 	if err != nil {
 		log.Print(err.Error())
 	}
