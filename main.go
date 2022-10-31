@@ -127,7 +127,7 @@ func main() {
 		log.Printf("Error loading .env file")
 	}
 
-	client, err = LoadMongoDriver()
+	mongo_client, err = LoadMongoDriver()
 	users = mongo_client.Database("Cluster0").Collection("users")
 	keys = mongo_client.Database("Cluster0").Collection("keys")
 
