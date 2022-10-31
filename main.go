@@ -447,30 +447,30 @@ func obfuscate(script string) string {
 	newpath := filepath.Join(".", id)
 	err := os.MkdirAll(newpath, os.ModePerm)
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 	f, err := os.Create(filepath.Join(newpath, "in.lua"))
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	defer f.Close()
 	_, err2 := f.WriteString(script)
 	if err2 != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	imageName := "moaufmklo/docker-ironbrew"
 
 	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 	defer out.Close()
 	io.Copy(os.Stdout, out)
@@ -484,17 +484,17 @@ func obfuscate(script string) string {
 		},
 	}, nil, nil, "")
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	content, err := os.ReadFile(filepath.Join(newpath, "out.lua"))
 
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	return string(content)
