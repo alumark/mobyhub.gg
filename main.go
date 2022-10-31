@@ -469,7 +469,7 @@ func obfuscate(script string) string {
 
 	out, err := cli.ImagePull(ctx, "docker.io/library/moaufmklo", types.ImagePullOptions{})
 	if err != nil {
-		log.Panic(err)
+		//log.Panic(err)
 	}
 	defer out.Close()
 	io.Copy(os.Stdout, out)
@@ -483,11 +483,11 @@ func obfuscate(script string) string {
 		},
 	}, nil, nil, "")
 	if err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 
 	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
