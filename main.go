@@ -497,6 +497,10 @@ func obfuscate(script string) string {
 		log.Panic(err)
 	}
 
+	if content == nil {
+		return string("bruh")
+	}
+
 	return string(content)
 }
 
