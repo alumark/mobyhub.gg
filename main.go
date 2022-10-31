@@ -132,7 +132,7 @@ func main() {
 	keys = mongo_client.Database("Cluster0").Collection("keys")
 
 	if err != nil {
-		return script, err
+		panic(err)
 	}
 
 	github = os.Getenv("TOKEN")
