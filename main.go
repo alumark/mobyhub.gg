@@ -6,21 +6,21 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"io/ioutil"
-	"path/filepath"
 	"log"
 	"math"
 	"math/rand"
 	"net/http"
 	"net/smtp"
 	"os"
-	"io"
+	"path/filepath"
 	"regexp"
 	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	docker_client "github.com/docker/docker/client"
+	"github.com/docker/docker/client"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
@@ -71,10 +71,10 @@ type JSONData struct {
 var rxEmail = regexp.MustCompile(".+@.+\\..+")
 
 var (
-	github string
-	client *mongo.Client
-	users  *mongo.Collection
-	keys   *mongo.Collection
+	github       string
+	mongo_client *mongo.Client
+	users        *mongo.Collection
+	keys         *mongo.Collection
 )
 
 var seededRand *rand.Rand = rand.New(
@@ -128,8 +128,8 @@ func main() {
 	}
 
 	client, err = LoadMongoDriver()
-	users = client.Database("Cluster0").Collection("users")
-	keys = client.Database("Cluster0").Collection("keys")
+	users = mongo_client.Database("Cluster0").Collection("users")
+	keys = mongo_client.Database("Cluster0").Collection("keys")
 
 	if err != nil {
 		panic(err)
@@ -196,7 +196,7 @@ func main() {
 	})
 
 	app.Get("/loadstring", func(c *fiber.Ctx) error {
-		client := http.Client{}
+		http_client := http.Client{}
 		req, err := http.NewRequest("GET", "https://raw.githubusercontent.com/alumark/mobyhub/master/login.lua", nil)
 
 		if err != nil {
@@ -207,7 +207,7 @@ func main() {
 			"Authorization": {fmt.Sprintf("token %s", github)},
 		}
 
-		res, err := client.Do(req)
+		res, err := http_client.Do(req)
 		if err != nil {
 			return err
 		}
@@ -285,7 +285,7 @@ func main() {
 			return err
 		}
 
-final := obfuscate(string(body))
+		final := obfuscate(string(body))
 
 		return c.SendString(string(final))
 	})
@@ -461,7 +461,7 @@ func obfuscate(script string) string {
 	}
 
 	ctx := context.Background()
-	cli, err := docker_client.NewClientWithOpts(docker_client.FromEnv, docker_client.WithAPIVersionNegotiation())
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		log.Panic(err)
 	}
@@ -478,7 +478,7 @@ func obfuscate(script string) string {
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: imageName,
 	}, &container.HostConfig{
-        	AutoRemove: true,
+		AutoRemove: true,
 		Binds: []string{
 			fmt.Sprintf("%s/:/data", newpath),
 		},
@@ -501,15 +501,15 @@ func obfuscate(script string) string {
 }
 
 func LoadMongoDriver() (*mongo.Client, error) {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+	mongo_client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 
 	if err != nil {
-		return client, err
+		return mongo_client, err
 	}
 
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		return client, err
+	if err := mongo_client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		return mongo_client, err
 	}
 
-	return client, nil
+	return mongo_client, nil
 }
