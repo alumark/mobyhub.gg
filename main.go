@@ -6,7 +6,6 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"math"
@@ -469,13 +468,6 @@ func obfuscate(script string) string {
 
 	imageName := "moaufmklo/docker-ironbrew"
 
-	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
-	if err != nil {
-		log.Panic(err)
-	}
-	defer out.Close()
-	io.Copy(os.Stdout, out)
-
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: imageName,
 	}, &container.HostConfig{
@@ -492,7 +484,7 @@ func obfuscate(script string) string {
 		log.Panic(err)
 	}
 
-	content, err := os.ReadFile(filepath.Join(newpath, "out.lua"))
+	content, err := os.ReadFile(filepath.Join(".", id, "out.lua"))
 
 	if err != nil {
 		log.Panic(err)
