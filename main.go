@@ -447,11 +447,11 @@ func obfuscate(script string) string {
 	newpath := filepath.Join(".", id)
 	err := os.MkdirAll(newpath, os.ModePerm)
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 	f, err := os.Create(filepath.Join(".", id, "in.lua"))
 	if err != nil {
-		log.Panic(err)
+		log.Print(err.Error())
 	}
 
 	_, err2 := f.WriteString(script)
