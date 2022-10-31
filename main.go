@@ -467,7 +467,7 @@ func obfuscate(script string) string {
 		log.Print(err.Error())
 	}
 
-	out, err := cli.ImagePull(ctx, "moaufmklo", types.ImagePullOptions{})
+	out, err := cli.ImagePull(ctx, "docker.io/library/moaufmklo", types.ImagePullOptions{})
 	if err != nil {
 		log.Panic(err)
 	}
