@@ -447,29 +447,29 @@ func obfuscate(script string) string {
 	newpath := filepath.Join(".", id)
 	err := os.MkdirAll(newpath, os.ModePerm)
 	if err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 	f, err := os.Create(filepath.Join(".", id, "in.lua"))
 	if err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 
 	_, err2 := f.WriteString(script)
 	if err2 != nil {
-		log.Print(err.Error())
+		panic(err2)
 	}
 
-	f.Close()
+	defer f.Close()
 
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 
 	out, err := cli.ImagePull(ctx, "docker.io/library/moaufmklo", types.ImagePullOptions{})
 	if err != nil {
-		//log.Panic(err)
+		panic(err)
 	}
 	defer out.Close()
 	io.Copy(os.Stdout, out)
@@ -502,7 +502,7 @@ func obfuscate(script string) string {
 	content, err := os.ReadFile(filepath.Join(".", id, "out.lua"))
 
 	if err != nil {
-		log.Print(err.Error())
+		panic(err)
 	}
 
 	if content == nil {
